@@ -1,40 +1,48 @@
 <template>
-  <div id="controls">
-    <div class="flex">
-      <div class="buttons">
-        <button class="speed highlight" @click="adjustTimerSpeed($event, 1000)">
-          1x
-        </button>
-        <button @click="operateHour(true, 1)">+1 hour</button>
-        <button @click="operateHour(false, 1)">-1 hour</button>
-      </div>
-      <div class="buttons">
-        <button class="speed" @click="adjustTimerSpeed($event, 500)">
-          2x
-        </button>
-        <button @click="operateMin(true, 1)">+1 min</button>
-        <button @click="operateMin(false, 1)">-1 min</button>
-      </div>
-      <div class="buttons">
-        <button class="speed" @click="adjustTimerSpeed($event, 250)">
-          5x
-        </button>
-        <button @click="operateMin(true, getMinutesRemainingAdd)">
-          +{{ getMinutesRemainingAdd }} min
-        </button>
-        <button @click="operateMin(false, getMinutesRemainingSubtract)">
-          -{{ getMinutesRemainingSubtract }} min
-        </button>
-      </div>
-    </div>
-    <button
-      id="play"
-      v-bind:class="{ highlight: !timerRunning }"
-      @click="playPause"
-    >
-      <span v-if="timerRunning">Pause</span
-      ><span v-if="!timerRunning">Play</span>
+  <div class="controls toggle">
+    <button class="controls__toggle" @click="toggleMenu($event)">
+      {{ toggled ? '&#9650;' : '&#9660;' }}
     </button>
+    <div class="controls__body">
+      <div class="flex">
+        <div class="buttons">
+          <button
+            class="speed highlight"
+            @click="adjustTimerSpeed($event, 1000)"
+          >
+            1x
+          </button>
+          <button @click="operateHour(true, 1)">+1 hour</button>
+          <button @click="operateHour(false, 1)">-1 hour</button>
+        </div>
+        <div class="buttons">
+          <button class="speed" @click="adjustTimerSpeed($event, 500)">
+            2x
+          </button>
+          <button @click="operateMin(true, 1)">+1 min</button>
+          <button @click="operateMin(false, 1)">-1 min</button>
+        </div>
+        <div class="buttons">
+          <button class="speed" @click="adjustTimerSpeed($event, 250)">
+            5x
+          </button>
+          <button @click="operateMin(true, getMinutesRemainingAdd)">
+            +{{ getMinutesRemainingAdd }} min
+          </button>
+          <button @click="operateMin(false, getMinutesRemainingSubtract)">
+            -{{ getMinutesRemainingSubtract }} min
+          </button>
+        </div>
+      </div>
+      <button
+        id="play"
+        v-bind:class="{ highlight: !timerRunning }"
+        @click="playPause"
+      >
+        <span v-if="timerRunning">Pause</span
+        ><span v-if="!timerRunning">Play</span>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -43,6 +51,11 @@ import timer from '@/utils/timer';
 
 export default {
   name: 'Controls',
+  data() {
+    return {
+      toggled: false,
+    };
+  },
   props: {
     timerRunning: Boolean,
     timer: Number,
@@ -51,9 +64,19 @@ export default {
     hours: [Number, String],
   },
   methods: {
+    toggleMenu(event) {
+      const controls = document.querySelector('.controls__body');
+      const display = document.querySelector('#display');
+      this.toggled = !this.toggled;
+      controls.classList.toggle('toggle');
+      display.classList.toggle('toggled');
+      this.toggled
+        ? (event.target.style.opacity = 0.4)
+        : (event.target.style.opacity = 1);
+    },
     adjustTimerSpeed(event, speed) {
+      const buttons = document.querySelectorAll('button.speed');
       if (this.timerSpeed != speed) {
-        const button = document.querySelectorAll('button.speed');
         this.$emit('adjustSpeed', speed);
         if (this.timerRunning) {
           clearInterval(this.timer);
@@ -62,7 +85,7 @@ export default {
           this.playPause();
         }
 
-        button.forEach((i) => {
+        buttons.forEach((i) => {
           i.classList.remove('highlight');
         });
         event.target.classList.add('highlight');

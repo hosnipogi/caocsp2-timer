@@ -75,6 +75,8 @@ export default {
 </script>
 
 <style lang="scss">
+$phone: 420px;
+
 @font-face {
   font-family: digital;
   src: url('assets/fonts/DS-DIGI.TTF');
@@ -92,11 +94,11 @@ export default {
 }
 body {
   background-color: #000;
+  overflow: hidden;
 }
 
 div#display {
   display: flex;
-  height: 45vh;
   justify-content: center;
   h1 {
     align-self: center;
@@ -111,40 +113,81 @@ div#display {
       display: inline-block;
     }
   }
+  &.toggled {
+    @media screen and (min-width: $phone) {
+      height: 100vh;
+    }
+  }
+  @media screen and (max-width: $phone) {
+    height: 45vh;
+  }
 }
 
-div#controls {
+div.controls {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  div.flex {
-    display: flex;
-    justify-content: center;
-    div.buttons {
-      flex-grow: 1;
+  &__body {
+    .flex {
       display: flex;
-      flex-direction: column;
+      justify-content: center;
+      .buttons {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
     }
+    &.toggle {
+      @media screen and (min-width: $phone) {
+        display: none;
+      }
+    }
+    button {
+      font-family: digital;
+      background: none;
+      color: red;
+      font-size: 4vw;
+      height: 13vh;
+      border-color: red;
+      &:focus {
+        outline: none;
+        box-shadow: none;
+      }
+      &.highlight {
+        background-color: rgba(255, 0, 0, 0.2);
+      }
+      &#play {
+        width: 100%;
+      }
+    }
+    /* @media screen and (max-width: $phone) {
+      display: block !important;
+    } */
   }
-  button {
-    font-family: digital;
-    background: none;
-    color: red;
-    font-size: 4vw;
-    height: 13vh;
-    border-color: red;
+  .controls__toggle {
+    font-size: 1.4rem;
+    text-align: center;
+    position: absolute;
+    right: 2vw;
+    height: 34px;
+    width: 34px;
+    background: red;
+    color: #000;
+    border-radius: 10%;
+    opacity: 0.4;
+    padding: 0;
+    @media screen and (max-width: $phone) {
+      display: none;
+    }
+    top: -12vh;
+    &:hover {
+      opacity: 1;
+    }
     &:focus {
       outline: none;
       box-shadow: none;
     }
-    &.highlight {
-      background-color: rgba(255, 0, 0, 0.2) !important;
-    }
-  }
-  button#play {
-    display: block;
-    width: 100%;
   }
 }
 
