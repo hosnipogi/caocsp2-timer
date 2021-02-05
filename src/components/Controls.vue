@@ -1,6 +1,6 @@
 <template>
   <div class="controls toggle">
-    <button class="controls__toggle" @click="toggleMenu($event)">
+    <button class="controls__toggle" @click="toggleMenu()" ref="toggle">
       {{ toggled ? '&#9650;' : '&#9660;' }}
     </button>
     <div class="controls__body" ref="controls">
@@ -88,19 +88,21 @@ export default {
           default:
             break;
         }
+      } else {
+        this.toggleMenu();
       }
     });
   },
   methods: {
-    toggleMenu(event) {
+    toggleMenu() {
       const controls = this.$refs.controls;
       const display = this.$parent.$refs.display.$el;
+      const toggle = this.$refs.toggle;
+
       this.toggled = !this.toggled;
       controls.classList.toggle('toggle');
       display.classList.toggle('toggled');
-      this.toggled
-        ? (event.target.style.opacity = 0.4)
-        : (event.target.style.opacity = 1);
+      this.toggled ? (toggle.style.opacity = 0.4) : (toggle.style.opacity = 1);
     },
     adjustTimerSpeed(event, speed) {
       const buttons = document.querySelectorAll('button.speed');
