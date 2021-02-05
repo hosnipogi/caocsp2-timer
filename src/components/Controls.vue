@@ -3,7 +3,7 @@
     <button class="controls__toggle" @click="toggleMenu($event)">
       {{ toggled ? '&#9650;' : '&#9660;' }}
     </button>
-    <div class="controls__body">
+    <div class="controls__body" ref="controls">
       <div class="flex">
         <div class="buttons">
           <button
@@ -48,6 +48,7 @@
 
 <script>
 import timer from '@/utils/timer';
+import touch from '@/utils/touchControls';
 
 export default {
   name: 'Controls',
@@ -63,10 +64,37 @@ export default {
     minutes: [Number, String],
     hours: [Number, String],
   },
+  mounted() {
+    const display = this.$parent.$refs.display.$el;
+    touch(display, (direction, tapOnly) => {
+      if (this.toggled) {
+        if (tapOnly) {
+          this.playPause();
+          return;
+        }
+        switch (direction) {
+          case 'left':
+            this.operateMin(false, 1);
+            break;
+          case 'right':
+            this.operateMin(true, 1);
+            break;
+          case 'up':
+            this.operateMin(false, 5);
+            break;
+          case 'down':
+            this.operateMin(true, 5);
+            break;
+          default:
+            break;
+        }
+      }
+    });
+  },
   methods: {
     toggleMenu(event) {
-      const controls = document.querySelector('.controls__body');
-      const display = document.querySelector('#display');
+      const controls = this.$refs.controls;
+      const display = this.$parent.$refs.display.$el;
       this.toggled = !this.toggled;
       controls.classList.toggle('toggle');
       display.classList.toggle('toggled');

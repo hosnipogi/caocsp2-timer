@@ -5,6 +5,7 @@
       :minutes="minutes"
       :seconds="seconds"
       :timerRunning="timerRunning"
+      ref="display"
     ></Display>
 
     <Controls
